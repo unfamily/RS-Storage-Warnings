@@ -1,25 +1,17 @@
+# RS Storage Warnings
 
-Installation information
-=======
+Warns you when Refined Storage disk capacity is critically low **before** a grid opens.
 
-This template repository can be directly cloned to get you started with a new
-mod. Simply create a new repository cloned from this one, by following the
-instructions provided by [GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+When you open a grid (wired, wireless, crafting, or portable), the mod scans storage **disks** and **storage blocks** on that network. If remaining capacity for a resource type is critically low, a **WARNING!** dialog appears instead of opening the grid right away.
 
-Once you have your clone, simply open the repository in the IDE of your choice. The usual recommendation for an IDE is either IntelliJ IDEA or Eclipse.
+You can ignore the warning once and continue into the grid, or close it and free space first.
 
-If at any point you are missing libraries in your IDE, or you've run into problems you can
-run `gradlew --refresh-dependencies` to refresh the local cache. `gradlew clean` to reset everything 
-{this does not affect your code} and then start the process again.
+## What is checked
 
-Mapping Names:
-============
-By default, the MDK is configured to use the official mapping names from Mojang for methods and fields 
-in the Minecraft codebase. These names are covered by a specific license. All modders should be aware of this
-license. For the latest license text, refer to the mapping file itself, or the reference copy here:
-https://github.com/NeoForged/NeoForm/blob/main/Mojang.md
+- Disks in disk drives and placed storage blocks (not external storage)
+- Portable grid disk (when opening a portable grid)
+- Remaining capacity aggregated per resource channel (item, fluid, and addon types)
 
-Additional Resources: 
-==========
-Community Documentation: https://docs.neoforged.net/  
-NeoForged Discord: https://discord.neoforged.net/
+## Per-type toggles
+
+From any grid, use the warning triangle side button to enable or disable capacity warnings per resource type. Choices are saved per player.

@@ -1,0 +1,11 @@
+{
+  "gui.rs_storage_warnings.warning.title": "ATTENZIONE!",
+  "gui.rs_storage_warnings.warning.intro": "Lo spazio rimanente dei disk è potenzialmente insufficiente:",
+  "gui.rs_storage_warnings.warning.bytes": "- %s: lo spazio disponibile è del: %s%%",
+  "gui.rs_storage_warnings.warning.types": "- %s: i tipi disponibili sono carenti.",
+  "gui.rs_storage_warnings.warning.ignore": "Ignora Avviso",
+  "gui.rs_storage_warnings.warning_types.title": "Tipi avviso storage",
+  "gui.rs_storage_warnings.warning_types.back": "Indietro",
+  "gui.rs_storage_warnings.warning_types.button": "Tipi avviso storage",
+  "gui.rs_storage_warnings.warning_types.button.detail": "Attiva o disattiva gli avvisi di capacità per tipo di risorsa"
+}

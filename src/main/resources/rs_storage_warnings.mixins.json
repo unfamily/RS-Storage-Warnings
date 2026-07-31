@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.unfamily.rs_storage_warnings.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MenuOpenerMixin"
+  ],
+  "client": [
+    "client.AbstractGridScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

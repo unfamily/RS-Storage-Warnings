@@ -1,0 +1,11 @@
+{
+  "gui.rs_storage_warnings.warning.title": "WARNING!",
+  "gui.rs_storage_warnings.warning.intro": "Remaining disk space may be insufficient:",
+  "gui.rs_storage_warnings.warning.bytes": "- %s: available space is %s%%",
+  "gui.rs_storage_warnings.warning.types": "- %s: available types are low.",
+  "gui.rs_storage_warnings.warning.ignore": "Ignore Warning",
+  "gui.rs_storage_warnings.warning_types.title": "Storage warning types",
+  "gui.rs_storage_warnings.warning_types.back": "Back",
+  "gui.rs_storage_warnings.warning_types.button": "Storage warning types",
+  "gui.rs_storage_warnings.warning_types.button.detail": "Enable or disable capacity warnings per resource type"
+}
