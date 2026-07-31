@@ -1,14 +1,15 @@
 package net.unfamily.rs_storage_warnings;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+import net.unfamily.rs_storage_warnings.network.ModNetwork;
 import net.unfamily.rs_storage_warnings.network.SyncWarningSettingsPayload;
+import net.unfamily.rs_storage_warnings.settings.PlayerWarningPreferences;
 
-@EventBusSubscriber(modid = RsStorageWarnings.MODID)
+@Mod.EventBusSubscriber(modid = RsStorageWarnings.MODID)
 public final class PlayerEvents {
     private PlayerEvents() {
     }
@@ -16,7 +17,8 @@ public final class PlayerEvents {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, SyncWarningSettingsPayload.fromPlayer(serverPlayer));
+            ModNetwork.sendToPlayer(serverPlayer,
+                    new SyncWarningSettingsPayload(PlayerWarningPreferences.getDisabledIds(serverPlayer)));
         }
     }
 }

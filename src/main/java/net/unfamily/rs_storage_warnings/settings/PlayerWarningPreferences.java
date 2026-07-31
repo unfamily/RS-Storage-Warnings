@@ -21,7 +21,6 @@ public final class PlayerWarningPreferences {
     private static final String ROOT_KEY = RsStorageWarnings.MODID;
     private static final String DISABLED_KEY = "disabled_warning_types";
 
-    /** Client-side mirror of the local player's disabled types. */
     private static final Set<String> CLIENT_DISABLED = ConcurrentHashMap.newKeySet();
 
     private PlayerWarningPreferences() {

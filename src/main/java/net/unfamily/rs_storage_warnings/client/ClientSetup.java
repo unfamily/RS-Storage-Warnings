@@ -1,7 +1,8 @@
 package net.unfamily.rs_storage_warnings.client;
 
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import net.unfamily.rs_storage_warnings.menu.ModMenus;
 
@@ -10,10 +11,10 @@ public final class ClientSetup {
     }
 
     public static void init(IEventBus modEventBus) {
-        modEventBus.addListener(ClientSetup::registerScreens);
+        modEventBus.addListener(ClientSetup::onClientSetup);
     }
 
-    private static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(ModMenus.STORAGE_WARNING.get(), StorageWarningScreen::new);
+    private static void onClientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> MenuScreens.register(ModMenus.STORAGE_WARNING.get(), StorageWarningScreen::new));
     }
 }

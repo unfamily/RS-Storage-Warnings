@@ -6,38 +6,29 @@ license="${mod_license}"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-authors="Unfamily, Iskandert"
-description='''
-Warns you when opening a Refined Storage grid if disks on that system are critically low on remaining space.
-'''
+authors="${mod_authors}"
+description='''${mod_description}'''
 
 [[mixins]]
 config="${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
-    modId="neoforge"
-    type="required"
-    versionRange="[${neo_version},)"
+    modId="forge"
+    mandatory=true
+    versionRange="${forge_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    type="required"
+    mandatory=true
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="refinedstorage"
-    type="required"
-    versionRange="[2.0.0,)"
+    mandatory=true
+    versionRange="[1.12.0,2.0.0)"
     ordering="AFTER"
-    side="BOTH"
-
-[[dependencies.${mod_id}]]
-    modId="refinedtypes"
-    type="optional"
-    versionRange="[0,)"
-    ordering="NONE"
     side="BOTH"

@@ -1,40 +1,41 @@
 package net.unfamily.rs_storage_warnings.network;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.minecraftforge.network.NetworkEvent;
 
-import net.unfamily.rs_storage_warnings.RsStorageWarnings;
 import net.unfamily.rs_storage_warnings.settings.PlayerWarningPreferences;
 
 /** S2C: full list of disabled warning storage-type ids for the local player. */
-public record SyncWarningSettingsPayload(Set<String> disabledTypeIds) implements CustomPacketPayload {
+public class SyncWarningSettingsPayload {
+    private final Set<String> disabledTypeIds;
 
-    public static final Type<SyncWarningSettingsPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(RsStorageWarnings.MODID, "sync_warning_settings"));
-
-    public static final StreamCodec<FriendlyByteBuf, SyncWarningSettingsPayload> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),
-            payload -> List.copyOf(payload.disabledTypeIds()),
-            list -> new SyncWarningSettingsPayload(new HashSet<>(list)));
-
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
+    public SyncWarningSettingsPayload(Set<String> disabledTypeIds) {
+        this.disabledTypeIds = Set.copyOf(disabledTypeIds);
     }
 
-    public static void handle(SyncWarningSettingsPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> PlayerWarningPreferences.replaceClientCache(payload.disabledTypeIds()));
+    public static void encode(SyncWarningSettingsPayload msg, FriendlyByteBuf buf) {
+        buf.writeVarInt(msg.disabledTypeIds.size());
+        for (String id : msg.disabledTypeIds) {
+            buf.writeUtf(id);
+        }
     }
 
-    public static SyncWarningSettingsPayload fromPlayer(net.minecraft.world.entity.player.Player player) {
-        return new SyncWarningSettingsPayload(PlayerWarningPreferences.getDisabledIds(player));
+    public static SyncWarningSettingsPayload decode(FriendlyByteBuf buf) {
+        int count = buf.readVarInt();
+        Set<String> ids = new HashSet<>(count);
+        for (int i = 0; i < count; i++) {
+            ids.add(buf.readUtf());
+        }
+        return new SyncWarningSettingsPayload(ids);
+    }
+
+    public static void handle(SyncWarningSettingsPayload msg, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context ctx = contextSupplier.get();
+        ctx.enqueueWork(() -> PlayerWarningPreferences.replaceClientCache(msg.disabledTypeIds));
+        ctx.setPacketHandled(true);
     }
 }

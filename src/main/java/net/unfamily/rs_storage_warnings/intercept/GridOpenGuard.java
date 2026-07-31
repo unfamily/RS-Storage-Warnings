@@ -6,24 +6,23 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
-import com.refinedmods.refinedstorage.common.Platform;
+import com.refinedmods.refinedstorage.apiimpl.API;
+import com.refinedmods.refinedstorage.inventory.player.PlayerSlot;
 
 /**
- * Detects Refined Storage grid opens and manages one-shot ignore skips.
+ * One-shot ignore skips and deferred grid reopen after the warning dialog.
  */
 public final class GridOpenGuard {
     private static final Set<UUID> SKIP_ONCE = ConcurrentHashMap.newKeySet();
-    private static final ConcurrentHashMap<UUID, MenuProvider> PENDING = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<UUID, PendingGridOpen> PENDING = new ConcurrentHashMap<>();
 
     private GridOpenGuard() {
-    }
-
-    public static boolean shouldIntercept(MenuProvider menuProvider) {
-        return GridResolver.resolve(menuProvider) != null;
     }
 
     public static void armSkip(Player player) {
@@ -34,21 +33,29 @@ public final class GridOpenGuard {
         return SKIP_ONCE.remove(player.getUUID());
     }
 
-    public static void storePending(Player player, MenuProvider menuProvider) {
-        PENDING.put(player.getUUID(), menuProvider);
+    public static void storePending(Player player, PendingGridOpen pending) {
+        PENDING.put(player.getUUID(), pending);
     }
 
     @Nullable
-    public static MenuProvider takePending(Player player) {
+    public static PendingGridOpen takePending(Player player) {
         return PENDING.remove(player.getUUID());
     }
 
     public static void openPending(ServerPlayer player) {
-        MenuProvider pending = takePending(player);
+        PendingGridOpen pending = takePending(player);
         if (pending == null) {
             return;
         }
         armSkip(player);
-        Platform.INSTANCE.getMenuOpener().openMenu(player, pending);
+        if (pending.pos() != null) {
+            API.instance().getGridManager().openGrid(pending.factoryId(), player, pending.pos());
+        } else if (pending.stack() != null) {
+            API.instance().getGridManager().openGrid(pending.factoryId(), player, pending.stack(), pending.slot());
+        }
+    }
+
+    public record PendingGridOpen(ResourceLocation factoryId, @Nullable ItemStack stack, @Nullable BlockPos pos,
+            PlayerSlot slot) {
     }
 }

@@ -2,12 +2,13 @@
   "required": true,
   "minVersion": "0.8",
   "package": "net.unfamily.rs_storage_warnings.mixin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "rs_storage_warnings.refmap.json",
   "mixins": [
-    "MenuOpenerMixin"
+    "GridManagerMixin"
   ],
   "client": [
-    "client.AbstractGridScreenMixin"
+    "client.GridScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -4,8 +4,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import com.refinedmods.refinedstorage.common.api.RefinedStorageApi;
-
 public record CapacityWarning(ResourceLocation storageTypeId, Kind kind, int remainingPercent) {
     public enum Kind {
         TYPES,
@@ -13,10 +11,10 @@ public record CapacityWarning(ResourceLocation storageTypeId, Kind kind, int rem
     }
 
     public Component storageTypeName() {
-        return RefinedStorageApi.INSTANCE.getResourceTypeRegistry()
-                .get(storageTypeId)
-                .map(type -> (Component) type.getTitle())
-                .orElseGet(() -> Component.literal(storageTypeId.toString()));
+        if (storageTypeId.getPath().equals("fluid")) {
+            return Component.translatable("sidebutton.refinedstorage.type.1");
+        }
+        return Component.translatable("sidebutton.refinedstorage.type.0");
     }
 
     public void write(FriendlyByteBuf buf) {

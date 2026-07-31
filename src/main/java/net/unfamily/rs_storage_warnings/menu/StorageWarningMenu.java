@@ -3,17 +3,15 @@ package net.unfamily.rs_storage_warnings.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-
-import net.neoforged.neoforge.network.IContainerFactory;
+import net.minecraftforge.network.NetworkHooks;
 
 import net.unfamily.rs_storage_warnings.capacity.CapacityWarning;
 import net.unfamily.rs_storage_warnings.intercept.GridOpenGuard;
@@ -28,7 +26,7 @@ public class StorageWarningMenu extends AbstractContainerMenu {
         this.warnings = List.copyOf(warnings);
     }
 
-    public static StorageWarningMenu fromNetwork(int containerId, Inventory inventory, RegistryFriendlyByteBuf buf) {
+    public static StorageWarningMenu fromNetwork(int containerId, Inventory inventory, FriendlyByteBuf buf) {
         int count = buf.readVarInt();
         List<CapacityWarning> warnings = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
@@ -37,18 +35,14 @@ public class StorageWarningMenu extends AbstractContainerMenu {
         return new StorageWarningMenu(containerId, inventory, warnings);
     }
 
-    public static IContainerFactory<StorageWarningMenu> factory() {
-        return StorageWarningMenu::fromNetwork;
+    public static void open(ServerPlayer player, List<CapacityWarning> warnings) {
+        NetworkHooks.openScreen(player,
+                new SimpleMenuProvider((id, inv, p) -> new StorageWarningMenu(id, inv, warnings),
+                        Component.translatable("gui.rs_storage_warnings.warning.title")),
+                buf -> writeExtraData(buf, warnings));
     }
 
-    public static void open(ServerPlayer player, List<CapacityWarning> warnings, MenuProvider pendingGrid) {
-        GridOpenGuard.storePending(player, pendingGrid);
-        player.openMenu(new SimpleMenuProvider(
-                (id, inv, p) -> new StorageWarningMenu(id, inv, warnings),
-                Component.translatable("gui.rs_storage_warnings.warning.title")), buf -> writeExtraData(buf, warnings));
-    }
-
-    private static void writeExtraData(RegistryFriendlyByteBuf buf, List<CapacityWarning> warnings) {
+    private static void writeExtraData(FriendlyByteBuf buf, List<CapacityWarning> warnings) {
         buf.writeVarInt(warnings.size());
         for (CapacityWarning warning : warnings) {
             warning.write(buf);
@@ -72,7 +66,6 @@ public class StorageWarningMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         super.removed(player);
         if (!player.level().isClientSide()) {
-            // Drop deferred grid open if the player closed without Ignore.
             GridOpenGuard.takePending(player);
         }
     }

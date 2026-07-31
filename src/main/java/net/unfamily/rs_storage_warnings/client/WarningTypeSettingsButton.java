@@ -1,39 +1,38 @@
 package net.unfamily.rs_storage_warnings.client;
 
-import java.util.List;
-
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
-import com.refinedmods.refinedstorage.common.grid.screen.AbstractGridScreen;
-import com.refinedmods.refinedstorage.common.support.widget.AbstractSideButtonWidget;
+import com.refinedmods.refinedstorage.screen.grid.GridScreen;
+import com.refinedmods.refinedstorage.screen.widget.sidebutton.SideButton;
 
 import net.unfamily.rs_storage_warnings.RsStorageWarnings;
 
-public class WarningTypeSettingsButton extends AbstractSideButtonWidget {
-    private static final ResourceLocation SPRITE = ResourceLocation.fromNamespaceAndPath(
-            RsStorageWarnings.MODID, "widget/warning_settings");
+public class WarningTypeSettingsButton extends SideButton {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(RsStorageWarnings.MODID,
+            "textures/gui/sprites/widget/warning_settings.png");
 
-    public WarningTypeSettingsButton(AbstractGridScreen<?> parent) {
-        super(btn -> Minecraft.getInstance().setScreen(new WarningTypeConfigScreen(parent)));
+    public WarningTypeSettingsButton(GridScreen screen) {
+        super(screen);
     }
 
     @Override
-    protected ResourceLocation getSprite() {
-        return SPRITE;
+    protected void renderButtonIcon(GuiGraphics graphics, int x, int y) {
+        graphics.blit(TEXTURE, x, y, 0, 0, 16, 16, 16, 16);
     }
 
     @Override
-    protected MutableComponent getTitle() {
-        return Component.translatable("gui.rs_storage_warnings.warning_types.button");
+    protected String getSideButtonTooltip() {
+        return I18n.get("gui.rs_storage_warnings.warning_types.button") + "\n"
+                + I18n.get("gui.rs_storage_warnings.warning_types.button.detail");
     }
 
     @Override
-    protected List<MutableComponent> getSubText() {
-        return List.of(Component.translatable("gui.rs_storage_warnings.warning_types.button.detail")
-                .withStyle(ChatFormatting.GRAY));
+    public void onPress() {
+        if (screen instanceof GridScreen gridScreen) {
+            Minecraft.getInstance().setScreen(new WarningTypeConfigScreen(gridScreen));
+        }
     }
 }

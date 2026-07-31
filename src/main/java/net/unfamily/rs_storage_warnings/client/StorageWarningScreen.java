@@ -48,7 +48,7 @@ public class StorageWarningScreen extends AbstractContainerScreen<StorageWarning
             warningLines.addAll(font.split(line, MIN_WIDTH - PADDING * 2));
         }
 
-        int contentHeight = LINE_HEIGHT // title
+        int contentHeight = LINE_HEIGHT
                 + 4
                 + warningLines.size() * LINE_HEIGHT
                 + 10
@@ -73,7 +73,7 @@ public class StorageWarningScreen extends AbstractContainerScreen<StorageWarning
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        renderBackground(guiGraphics);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
