@@ -29,7 +29,7 @@ public class MenuOpenerMixin {
         }
         if (GridOpenGuard.consumeSkip(player)) {
             if (Config.loggingEnabled()) {
-                RsStorageWarnings.LOGGER.debug("Skipping warning for {}", player.getGameProfile().getName());
+                RsStorageWarnings.LOGGER.debug("Skipping warning for {}", player.getGameProfile().name());
             }
             return;
         }
@@ -44,7 +44,7 @@ public class MenuOpenerMixin {
 
         if (Config.loggingEnabled()) {
             RsStorageWarnings.LOGGER.debug("Intercepting grid open for {} with {} warning(s)",
-                    player.getGameProfile().getName(), warnings.size());
+                    player.getGameProfile().name(), warnings.size());
         }
 
         StorageWarningMenu.open(player, warnings, menuProvider);

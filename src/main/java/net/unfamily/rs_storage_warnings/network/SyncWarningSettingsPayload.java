@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import net.unfamily.rs_storage_warnings.RsStorageWarnings;
@@ -18,7 +18,7 @@ import net.unfamily.rs_storage_warnings.settings.PlayerWarningPreferences;
 public record SyncWarningSettingsPayload(Set<String> disabledTypeIds) implements CustomPacketPayload {
 
     public static final Type<SyncWarningSettingsPayload> TYPE = new Type<>(
-            ResourceLocation.fromNamespaceAndPath(RsStorageWarnings.MODID, "sync_warning_settings"));
+            Identifier.fromNamespaceAndPath(RsStorageWarnings.MODID, "sync_warning_settings"));
 
     public static final StreamCodec<FriendlyByteBuf, SyncWarningSettingsPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()),

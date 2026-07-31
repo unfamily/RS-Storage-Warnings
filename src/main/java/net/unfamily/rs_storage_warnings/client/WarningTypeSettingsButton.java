@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import com.refinedmods.refinedstorage.common.grid.screen.AbstractGridScreen;
 import com.refinedmods.refinedstorage.common.support.widget.AbstractSideButtonWidget;
@@ -14,7 +14,7 @@ import com.refinedmods.refinedstorage.common.support.widget.AbstractSideButtonWi
 import net.unfamily.rs_storage_warnings.RsStorageWarnings;
 
 public class WarningTypeSettingsButton extends AbstractSideButtonWidget {
-    private static final ResourceLocation SPRITE = ResourceLocation.fromNamespaceAndPath(
+    private static final Identifier SPRITE = Identifier.fromNamespaceAndPath(
             RsStorageWarnings.MODID, "widget/warning_settings");
 
     public WarningTypeSettingsButton(AbstractGridScreen<?> parent) {
@@ -22,7 +22,7 @@ public class WarningTypeSettingsButton extends AbstractSideButtonWidget {
     }
 
     @Override
-    protected ResourceLocation getSprite() {
+    protected Identifier getSprite() {
         return SPRITE;
     }
 

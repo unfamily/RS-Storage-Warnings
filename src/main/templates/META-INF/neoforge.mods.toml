@@ -31,7 +31,7 @@ config="${mod_id}.mixins.json"
 [[dependencies.${mod_id}]]
     modId="refinedstorage"
     type="required"
-    versionRange="[2.0.0,)"
+    versionRange="[3.2.1,)"
     ordering="AFTER"
     side="BOTH"
 

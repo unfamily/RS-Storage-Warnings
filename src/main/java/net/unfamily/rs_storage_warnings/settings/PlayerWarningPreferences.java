@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -27,7 +27,7 @@ public final class PlayerWarningPreferences {
     private PlayerWarningPreferences() {
     }
 
-    public static boolean isWarningEnabled(Player player, ResourceLocation storageTypeId) {
+    public static boolean isWarningEnabled(Player player, Identifier storageTypeId) {
         if (player.level().isClientSide()) {
             return !CLIENT_DISABLED.contains(storageTypeId.toString());
         }
@@ -41,7 +41,7 @@ public final class PlayerWarningPreferences {
         return Set.copyOf(readDisabled(player));
     }
 
-    public static void setWarningEnabled(ServerPlayer player, ResourceLocation storageTypeId, boolean enabled) {
+    public static void setWarningEnabled(ServerPlayer player, Identifier storageTypeId, boolean enabled) {
         Set<String> disabled = readDisabled(player);
         String id = storageTypeId.toString();
         if (enabled) {
@@ -58,11 +58,11 @@ public final class PlayerWarningPreferences {
     }
 
     private static Set<String> readDisabled(Player player) {
-        var root = player.getPersistentData().getCompound(ROOT_KEY);
+        var root = player.getPersistentData().getCompound(ROOT_KEY).orElse(new CompoundTag());
         Set<String> disabled = new HashSet<>();
-        ListTag list = root.getList(DISABLED_KEY, Tag.TAG_STRING);
+        ListTag list = root.getList(DISABLED_KEY).orElse(new ListTag());
         for (int i = 0; i < list.size(); i++) {
-            disabled.add(list.getString(i));
+            disabled.add(list.getString(i).orElse(""));
         }
         return disabled;
     }
@@ -72,7 +72,7 @@ public final class PlayerWarningPreferences {
         for (String id : disabled) {
             list.add(StringTag.valueOf(id));
         }
-        var root = player.getPersistentData().getCompound(ROOT_KEY);
+        var root = player.getPersistentData().getCompound(ROOT_KEY).orElse(new CompoundTag());
         root.put(DISABLED_KEY, list);
         player.getPersistentData().put(ROOT_KEY, root);
     }

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.MenuProvider;
 
 import com.refinedmods.refinedstorage.api.network.Network;
@@ -82,7 +82,7 @@ public final class DiskCapacityScanner {
             RsStorageWarnings.LOGGER.debug(
                     "Capacity scan: disksSeen={}, buckets={}, warnings={}, threshold={}%", disksSeen,
                     aggregator.buckets.size(), warnings.size(), Config.thresholdPercent());
-            for (Map.Entry<ResourceLocation, Bucket> entry : aggregator.buckets.entrySet()) {
+            for (Map.Entry<Identifier, Bucket> entry : aggregator.buckets.entrySet()) {
                 Bucket bucket = entry.getValue();
                 int rem = remainingPercent(bucket.used, bucket.total);
                 RsStorageWarnings.LOGGER.debug("  bucket {} used={}/{} ({}% left)", entry.getKey(), bucket.used,
@@ -148,7 +148,7 @@ public final class DiskCapacityScanner {
             // Fall back to node totals without type split.
             long capacity = node.getCapacity();
             if (capacity > 0) {
-                aggregator.add(ResourceLocation.fromNamespaceAndPath("refinedstorage", "item"), node.getStored(),
+                aggregator.add(Identifier.fromNamespaceAndPath("refinedstorage", "item"), node.getStored(),
                         capacity);
                 return 1;
             }
@@ -185,18 +185,18 @@ public final class DiskCapacityScanner {
             used = capacity;
         }
 
-        ResourceLocation typeId = resolveStorageTypeId(delegate);
+        Identifier typeId = resolveStorageTypeId(delegate);
         aggregator.add(typeId, used, capacity);
     }
 
-    private static ResourceLocation resolveStorageTypeId(Storage storage) {
+    private static Identifier resolveStorageTypeId(Storage storage) {
         if (storage instanceof SerializableStorage serializable) {
             StorageType type = serializable.getType();
             return RefinedStorageApi.INSTANCE.getStorageTypeRegistry()
                     .getId(type)
-                    .orElseGet(() -> ResourceLocation.fromNamespaceAndPath("refinedstorage", "unknown"));
+                    .orElseGet(() -> Identifier.fromNamespaceAndPath("refinedstorage", "unknown"));
         }
-        return ResourceLocation.fromNamespaceAndPath("refinedstorage", "item");
+        return Identifier.fromNamespaceAndPath("refinedstorage", "item");
     }
 
     @Nullable
@@ -245,9 +245,9 @@ public final class DiskCapacityScanner {
     }
 
     private static final class Aggregator {
-        private final Map<ResourceLocation, Bucket> buckets = new HashMap<>();
+        private final Map<Identifier, Bucket> buckets = new HashMap<>();
 
-        void add(ResourceLocation typeId, long used, long total) {
+        void add(Identifier typeId, long used, long total) {
             Bucket bucket = buckets.computeIfAbsent(typeId, ignored -> new Bucket());
             bucket.used += used;
             bucket.total += total;
@@ -255,7 +255,7 @@ public final class DiskCapacityScanner {
 
         List<CapacityWarning> toWarnings(int threshold) {
             List<CapacityWarning> warnings = new ArrayList<>();
-            for (Map.Entry<ResourceLocation, Bucket> entry : buckets.entrySet()) {
+            for (Map.Entry<Identifier, Bucket> entry : buckets.entrySet()) {
                 Bucket bucket = entry.getValue();
                 if (bucket.total <= 0) {
                     continue;

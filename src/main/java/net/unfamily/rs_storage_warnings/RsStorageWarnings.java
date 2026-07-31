@@ -25,7 +25,7 @@ public class RsStorageWarnings {
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(ModNetwork::register);
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             ClientSetup.init(modEventBus);
         }
     }
